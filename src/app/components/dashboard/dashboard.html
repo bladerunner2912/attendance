@@ -1,0 +1,33 @@
+<div class="dashboard">
+  <header class="dashboard__header">
+    <div>
+      <h1>{{ headerTitle() }}</h1>
+      <p class="dashboard__subtitle">Welcome back. Choose a class tile to continue.</p>
+    </div>
+    <button class="logout" type="button" (click)="logout()">Logout</button>
+  </header>
+
+  <section class="dashboard__loading" *ngIf="isLoading()">
+    <p>Loading classes...</p>
+  </section>
+
+  <section class="dashboard__tiles" *ngIf="!isLoading()">
+    <button
+      type="button"
+      class="tile tile--clickable"
+      *ngFor="let tile of classTiles()"
+      (click)="openClass(tile)"
+    >
+      <h2>{{ tile.name }}</h2>
+      <p>Tap to open</p>
+    </button>
+    <div class="tile tile--empty" *ngIf="classTiles().length === 0">
+      <h2>{{ emptyMessage() }}</h2>
+      <p>Use the + tile to add a class.</p>
+    </div>
+    <button class="tile tile--add" type="button" aria-label="Add class">
+      <span>+</span>
+      <p>Add class</p>
+    </button>
+  </section>
+</div>

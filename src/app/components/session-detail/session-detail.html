@@ -1,0 +1,51 @@
+<div class="session-detail">
+  <header class="session-detail__header">
+    <button type="button" class="back" (click)="goBack()">Back</button>
+    <div>
+      <h1>{{ sessionName() }}</h1>
+      <p>{{ className() }} | Session #{{ sessionId() }}</p>
+    </div>
+  </header>
+
+  <section class="session-meta">
+    <p><strong>Description:</strong> {{ description() }}</p>
+    <p><strong>Date:</strong> {{ formatDisplayDate(sessionDate()) }}</p>
+    <p><strong>Duration:</strong> {{ durationMinutes() }} min</p>
+    <p><strong>Start:</strong> {{ formatDisplayTime(startTime()) }}</p>
+    <p><strong>End:</strong> {{ formatDisplayTime(endTime()) }}</p>
+  </section>
+
+  <p *ngIf="isLoading()">Loading session details...</p>
+  <p class="error" *ngIf="!isLoading() && errorMessage()">{{ errorMessage() }}</p>
+
+  <section class="attendance-overview">
+    <div class="chart-card">
+      <h2>Attendance Split</h2>
+      <div class="pie-chart" [style.background]="pieBackground()">
+        <div class="pie-chart__center">{{ presentPercent() }}%</div>
+      </div>
+      <div class="legend">
+        <p><span class="dot dot--present"></span> Present: {{ presentCount() }}</p>
+        <p><span class="dot dot--absent"></span> Absent: {{ absentCount() }}</p>
+      </div>
+    </div>
+
+    <div class="list-card">
+      <h2>Present Students</h2>
+      <div class="student-list">
+        <ul>
+          <li *ngFor="let student of presentStudents()">{{ student }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="list-card list-card--absent">
+      <h2>Absent Students</h2>
+      <div class="student-list">
+        <ul>
+          <li *ngFor="let student of absentStudents()">{{ student }}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</div>

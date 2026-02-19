@@ -1,0 +1,44 @@
+<div class="student-profile">
+  <header class="student-profile__header">
+    <button type="button" class="back" (click)="goBack()">Back</button>
+    <div>
+      <h1>{{ fullname() }}</h1>
+      <p>{{ className() }}</p>
+    </div>
+  </header>
+
+  <section class="student-meta">
+    <p><strong>Email:</strong> {{ email() }}</p>
+    <p><strong>Phone:</strong> {{ phoneNo() }}</p>
+    <p><strong>Attended Sessions:</strong> {{ attendedSessionsCount() }}</p>
+    <p><strong>Total Sessions:</strong> {{ totalSessionsCount() }}</p>
+    <p><strong>Attendance %:</strong> {{ attendancePercentage() }}%</p>
+  </section>
+
+  <p *ngIf="isLoading()">Loading student profile...</p>
+  <p class="error" *ngIf="!isLoading() && errorMessage()">{{ errorMessage() }}</p>
+
+  <section class="sections">
+    <article class="section section--missed">
+      <h2>Missed Sessions</h2>
+      <p *ngIf="missedSessions().length === 0">No missed sessions.</p>
+      <div class="tiles">
+        <div class="tile" *ngFor="let session of missedSessions()">
+          <h3>{{ session.name }}</h3>
+          <p>{{ formatDisplayDate(session.session_date) }}</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="section">
+      <h2>Attended Sessions</h2>
+      <p *ngIf="attendedSessions().length === 0">No attended sessions.</p>
+      <div class="tiles">
+        <div class="tile tile--success" *ngFor="let session of attendedSessions()">
+          <h3>{{ session.name }}</h3>
+          <p>{{ formatDisplayDate(session.session_date) }}</p>
+        </div>
+      </div>
+    </article>
+  </section>
+</div>

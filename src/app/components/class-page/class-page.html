@@ -1,0 +1,211 @@
+<div class="class-page">
+  <header class="class-page__header">
+    <button type="button" class="back" (click)="goBack()">Back</button>
+    <h1>{{ className() }}</h1>
+  </header>
+
+  <section class="class-page__actions" *ngIf="!isStudentRole()">
+    <button
+      type="button"
+      class="action"
+      [class.action--primary]="activeSection() === 'new'"
+      (click)="setSection('new')"
+    >
+      New Session
+    </button>
+    <button
+      type="button"
+      class="action"
+      [class.action--primary]="activeSection() === 'previous'"
+      (click)="setSection('previous')"
+    >
+      Previous Sessions
+    </button>
+    <button
+      type="button"
+      class="action"
+      [class.action--primary]="activeSection() === 'details'"
+      (click)="setSection('details')"
+    >
+      Class Details
+    </button>
+  </section>
+
+  <section class="new-session" *ngIf="!isStudentRole() && activeSection() === 'new'">
+    <h2>New Session</h2>
+    <p>Create a new class session and continue to attendance marking.</p>
+    <button type="button" class="action action--primary mt-2" (click)="toggleSessionForm()">
+      {{ showSessionForm() ? 'Hide Form' : 'Start New Session' }}
+    </button>
+
+    <form class="new-session__form" *ngIf="showSessionForm()" (ngSubmit)="startSession()">
+      <label>
+        <span>Session Name</span>
+        <input type="text" name="sessionName" [(ngModel)]="sessionForm.sessionName" required />
+      </label>
+      <label>
+        <span>Description</span>
+        <textarea name="description" rows="3" [(ngModel)]="sessionForm.description"></textarea>
+      </label>
+      <div class="new-session__row">
+        <label>
+          <span>Date</span>
+          <input
+            type="date"
+            name="date"
+            [(ngModel)]="sessionForm.date"
+            [min]="minSessionDate"
+            [max]="maxSessionDate"
+            required
+          />
+        </label>
+        <label>
+          <span>Start Time</span>
+          <input type="time" name="time" [(ngModel)]="sessionForm.time" required />
+        </label>
+      </div>
+      <label>
+        <span>Duration (minutes)</span>
+        <input
+          type="number"
+          min="1"
+          name="durationMinutes"
+          [(ngModel)]="sessionForm.durationMinutes"
+          required
+        />
+      </label>
+      <p class="form-error" *ngIf="formError()">{{ formError() }}</p>
+      <button type="submit" class="action action--primary" [disabled]="isCreatingSession()">
+        {{ isCreatingSession() ? 'Creating...' : 'Continue to Attendance' }}
+      </button>
+      <p *ngIf="isCreatingSession()">Creating session...</p>
+    </form>
+  </section>
+
+  <section class="sessions" *ngIf="!isStudentRole() && activeSection() === 'previous'">
+    <div class="sessions__header">
+      <h2>Previous Sessions</h2>
+      <button type="button" class="reverse-btn" (click)="toggleReverseOrder()">
+        {{ isReverseOrder() ? 'Normal Order' : 'Reverse Order' }}
+      </button>
+    </div>
+    <p *ngIf="isLoadingSessions()">Loading previous sessions...</p>
+    <p *ngIf="!isLoadingSessions() && sessionsError()">{{ sessionsError() }}</p>
+    <p *ngIf="!isLoadingSessions() && !sessionsError() && displayedSessions().length === 0">
+      No previous sessions found.
+    </p>
+
+    <a
+      class="session-card session-card--clickable"
+      *ngFor="let session of paginatedSessions(); let i = index"
+      [routerLink]="['/dashboard/class', classId(), 'session', session.id]"
+      [queryParams]="sessionQueryParams(session)"
+    >
+      <!-- <div class="session-row"> -->
+      <!--   <span class="session-key">id</span> -->
+      <!--   <span class="session-value">{{ session.id }}</span> -->
+      <!-- </div> -->
+      <!-- <div class="session-row"> -->
+      <!--   <span class="session-key">class_id</span> -->
+      <!--   <span class="session-value">{{ session.class_id }}</span> -->
+      <!-- </div> -->
+      <div class="session-row">
+        <span class="session-key">Name</span>
+        <span class="session-value">{{ session.name }}</span>
+      </div>
+      <div class="session-row">
+        <span class="session-key">Description</span>
+        <span class="session-value">{{ session.description || '-' }}</span>
+      </div>
+      <div class="session-row">
+        <span class="session-key">Session Date</span>
+        <span class="session-value">{{ formatDisplayDate(session.session_date) }}</span>
+      </div>
+      <!-- <div class="session-row"> -->
+      <!--   <span class="session-key">duration</span> -->
+      <!--   <span class="session-value">{{ session.duration }} min</span> -->
+      <!-- </div> -->
+      <!-- <div class="session-row"> -->
+      <!--   <span class="session-key">start_time</span> -->
+      <!--   <span class="session-value">{{ session.start_time || '-' }}</span> -->
+      <!-- </div> -->
+      <!-- <div class="session-row"> -->
+      <!--   <span class="session-key">end_time</span> -->
+      <!--   <span class="session-value">{{ session.end_time || '-' }}</span> -->
+      <!-- </div> -->
+    </a>
+
+    <div class="pagination" *ngIf="displayedSessions().length > sessionsPageSize">
+      <button type="button" (click)="previousSessionsPage()" [disabled]="sessionsPage() === 1">
+        Previous
+      </button>
+      <span>Page {{ sessionsPage() }} / {{ totalSessionsPages() }}</span>
+      <button
+        type="button"
+        (click)="nextSessionsPage()"
+        [disabled]="sessionsPage() === totalSessionsPages()"
+      >
+        Next
+      </button>
+    </div>
+  </section>
+
+  <section class="class-details" *ngIf="!isStudentRole() && activeSection() === 'details'">
+    <h2>Class Details</h2>
+    <p *ngIf="isLoadingClassDetails()">Loading class details...</p>
+    <p *ngIf="!isLoadingClassDetails() && classDetailsError()">{{ classDetailsError() }}</p>
+    <p *ngIf="!isLoadingClassDetails() && !classDetailsError() && classDetailsRows().length === 0">
+      No students found.
+    </p>
+
+    <div class="class-details__table-wrap" *ngIf="!isLoadingClassDetails() && classDetailsRows().length > 0">
+      <table class="class-details__table">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Attended Sessions</th>
+            <th>Attendance %</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of paginatedClassDetailsRows()">
+            <td>
+              <a
+                class="student-link"
+                [routerLink]="['/dashboard/class', classId(), 'student', row.student_id]"
+                [queryParams]="studentProfileQueryParams(row)"
+              >
+                {{ row.fullname }}
+              </a>
+            </td>
+            <td>{{ row.email }}</td>
+            <td>{{ row.phone_no }}</td>
+            <td>{{ displayAttendedSessions(row) }}</td>
+            <td>{{ displayAttendancePercentage(row) }}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination" *ngIf="classDetailsRows().length > studentsPageSize">
+      <button type="button" (click)="previousStudentsPage()" [disabled]="studentsPage() === 1">
+        Previous
+      </button>
+      <span>Page {{ studentsPage() }} / {{ totalStudentsPages() }}</span>
+      <button
+        type="button"
+        (click)="nextStudentsPage()"
+        [disabled]="studentsPage() === totalStudentsPages()"
+      >
+        Next
+      </button>
+    </div>
+  </section>
+
+  <section class="class-details" *ngIf="isStudentRole()">
+    <h2>Redirecting...</h2>
+    <p>Opening student view for this class.</p>
+  </section>
+</div>

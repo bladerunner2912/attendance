@@ -1,0 +1,23 @@
+.global-loader {
+  position: fixed;
+  inset: 0;
+  background: rgba(24, 18, 12, 0.22);
+  display: grid;
+  place-items: center;
+  z-index: 1100;
+}
+
+.global-loader__spinner {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 5px solid rgba(255, 255, 255, 0.65);
+  border-top-color: #1a1815;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

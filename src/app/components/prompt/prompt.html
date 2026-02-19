@@ -1,0 +1,14 @@
+<div class="prompt-backdrop" *ngIf="isOpen">
+  <section class="prompt" role="dialog" aria-modal="true" [attr.aria-label]="title">
+    <h2>{{ title }}</h2>
+    <p>{{ message }}</p>
+    <div class="prompt__actions">
+      <button type="button" class="cancel" (click)="onCancel()" [disabled]="disabled">
+        {{ cancelText }}
+      </button>
+      <button type="button" class="confirm" (click)="onConfirm()" [disabled]="disabled">
+        {{ confirmText }}
+      </button>
+    </div>
+  </section>
+</div>

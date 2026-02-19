@@ -1,0 +1,67 @@
+<div class="attendance-page">
+  <header class="attendance-page__header">
+    <button type="button" class="back" (click)="goBack()">Back</button>
+    <div>
+      <h1>{{ className() }}</h1>
+      <p>{{ sessionName() }}</p>
+    </div>
+  </header>
+
+  <section class="session-meta">
+    <p><strong>Date:</strong> {{ formatDisplayDate(sessionDate()) }}</p>
+    <p><strong>Start Time:</strong> {{ sessionTime() || '-' }}</p>
+    <p><strong>Duration:</strong> {{ durationMinutes() || '-' }} min</p>
+    <p><strong>Description:</strong> {{ description() || '-' }}</p>
+  </section>
+
+  <p class="status-error" *ngIf="pageError()">{{ pageError() }}</p>
+  <p class="status-success" *ngIf="successMessage()">{{ successMessage() }}</p>
+  <p *ngIf="isLoadingStudents()">Loading students...</p>
+
+  <section class="attendance-board">
+    <article class="panel">
+      <h2>Unmarked Students</h2>
+      <p *ngIf="unmarkedStudents().length === 0">All students are marked present.</p>
+      <div class="student-row" *ngFor="let student of unmarkedStudents()">
+        <div>
+          <h3>{{ student.fullname }}</h3>
+          <p>{{ student.email }}</p>
+        </div>
+        <button type="button" class="mark" (click)="markPresent(student)" [disabled]="isSubmittingAttendance()">
+          Mark Present
+        </button>
+      </div>
+    </article>
+
+    <article class="panel panel--present">
+      <h2>Present Students</h2>
+      <p *ngIf="presentStudents().length === 0">No students marked present yet.</p>
+      <div class="student-row student-row--present" *ngFor="let student of presentStudents()">
+        <div>
+          <h3>{{ student.fullname }}</h3>
+          <p>{{ student.email }}</p>
+        </div>
+        <button type="button" class="remove" (click)="removePresent(student)" [disabled]="isSubmittingAttendance()">
+          Undo
+        </button>
+      </div>
+    </article>
+  </section>
+
+  <section class="attendance-confirm">
+    <button type="button" class="confirm" (click)="confirmAttendance()" [disabled]="isSubmittingAttendance() || isLoadingStudents()">
+      {{ isSubmittingAttendance() ? 'Submitting...' : 'Confirm Attendance' }}
+    </button>
+  </section>
+
+  <app-prompt
+    [isOpen]="showConfirmPrompt()"
+    [title]="'Confirm Attendance'"
+    [message]="confirmPromptMessage()"
+    [confirmText]="'Mark Attendance'"
+    [cancelText]="'Review Again'"
+    [disabled]="isSubmittingAttendance()"
+    (confirmed)="onPromptConfirm()"
+    (cancelled)="onPromptCancel()"
+  />
+</div>

@@ -1,0 +1,161 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #f5f0e6 0%, #e3e0d6 60%, #d8d2c4 100%);
+  color: #1a1815;
+  font-family: "Alegreya", "Georgia", serif;
+}
+
+.attendance-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 36px 28px 64px;
+}
+
+.attendance-page__header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 22px;
+  border-radius: 16px;
+  background: #fdfbf7;
+  box-shadow: 0 18px 45px rgba(50, 37, 20, 0.12);
+}
+
+.attendance-page__header h1 {
+  margin: 0;
+}
+
+.attendance-page__header p {
+  margin: 4px 0 0;
+  color: #5a4933;
+}
+
+.back {
+  border: none;
+  padding: 9px 14px;
+  border-radius: 999px;
+  background: #1a1815;
+  color: #fdfbf7;
+  cursor: pointer;
+}
+
+.session-meta {
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: #fbf8f2;
+  border: 1px solid rgba(90, 73, 51, 0.2);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px 14px;
+}
+
+.session-meta p {
+  margin: 0;
+}
+
+.attendance-board {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.status-error {
+  margin: 12px 0 0;
+  color: #a12a2a;
+  font-weight: 700;
+}
+
+.status-success {
+  margin: 12px 0 0;
+  color: #0d6b2f;
+  font-weight: 700;
+}
+
+.panel {
+  padding: 16px;
+  border-radius: 14px;
+  background: #fdfbf7;
+  box-shadow: 0 18px 40px rgba(50, 37, 20, 0.1);
+}
+
+.panel--present {
+  background: #edf9ef;
+  border: 1px solid #b9e2bf;
+}
+
+.panel h2 {
+  margin: 0 0 12px;
+}
+
+.student-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 0;
+  border-top: 1px solid rgba(90, 73, 51, 0.12);
+}
+
+.student-row:first-of-type {
+  border-top: none;
+}
+
+.student-row h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.student-row p {
+  margin: 3px 0 0;
+  color: #5a4933;
+}
+
+.student-row--present {
+  background: rgba(127, 207, 137, 0.16);
+  border-radius: 8px;
+  padding: 10px;
+  border-top: none;
+  margin-top: 8px;
+}
+
+.mark,
+.remove,
+.confirm {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mark:disabled,
+.remove:disabled,
+.confirm:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.mark {
+  background: #1a1815;
+  color: #fdfbf7;
+}
+
+.remove {
+  background: #b64444;
+  color: #fff;
+}
+
+.attendance-confirm {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.confirm {
+  background: #0d6b2f;
+  color: #fff;
+  padding: 11px 18px;
+}

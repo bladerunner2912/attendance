@@ -1,0 +1,5 @@
+<div class="snackbar" [class.show]="isVisible()" [class.error]="message()?.kind === 'error'"
+  [class.info]="message()?.kind === 'info'" [class.success]="message()?.kind === 'success'">
+  <span class="snackbar__text">{{ message()?.text }}</span>
+  <button class="snackbar__close" type="button" (click)="dismiss()">Close</button>
+</div>
