@@ -67,7 +67,15 @@ export class Auth {
   }
 
   getToken() {
-    return this.storage?.getItem('accessToken') ?? null;
+    const token = this.storage?.getItem('accessToken') ?? null;
+    if (!token) {
+      return null;
+    }
+    if (this.isTokenExpired(token)) {
+      this.logout();
+      return null;
+    }
+    return token;
   }
 
   getRole() {
@@ -84,6 +92,26 @@ export class Auth {
     } catch {
       this.storage?.removeItem('user');
       return null;
+    }
+  }
+
+  private isTokenExpired(token: string): boolean {
+    try {
+      const payloadSegment = token.split('.')[1];
+      if (!payloadSegment) {
+        return false;
+      }
+      const base64 = payloadSegment.replace(/-/g, '+').replace(/_/g, '/');
+      const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=');
+      const decoded = atob(padded);
+      const payload = JSON.parse(decoded) as { exp?: number };
+      if (!payload?.exp || typeof payload.exp !== 'number') {
+        return false;
+      }
+      const nowSeconds = Math.floor(Date.now() / 1000);
+      return payload.exp <= nowSeconds;
+    } catch {
+      return false;
     }
   }
 }
